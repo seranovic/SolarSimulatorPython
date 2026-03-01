@@ -1,16 +1,44 @@
-# This is a sample Python script.
+import interactions
+import integrators
+import numpy as np
+from scipy import constants
+import matplotlib.pyplot as plt
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+positions = np.array([
+    [0,0,0],
+    [0,0, constants.astronomical_unit]
+])
 
+velocities = np.array([
+    [0, 0,0],
+    [30e3,0,1e3]
+])
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+masses = np.array([
+    [2e30], # sun
+    [6e24]
+])
 
+if __name__ == "__main__":
+    time_step = 60*60*24
+    time = 0
+    plt.figure()
+    plt.axes(projection='3d')
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    while(time < 4*60*60*24*365):
+        x = positions[:, 0]
+        y = positions[:, 1]
+        z = positions[:, 2]
+        forces = interactions.get_forces(positions, masses)
+        accelerations = forces / masses
+        velocities = velocities + accelerations * time_step
+        positions = positions + velocities * time_step
+        time = time + time_step
+        print(time, x, y, z)
+        plt.plot(x,y,z, 'o')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+plt.show()
+
+#find way to separate the integrator for easy hot-swap
+#find better way to display 3d graph.
+#find way to store data.
