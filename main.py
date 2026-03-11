@@ -5,27 +5,28 @@ from scipy import constants
 import matplotlib.pyplot as plt
 
 positions = np.array([
-    [0,0,0],
-    [0,0, constants.astronomical_unit]
+    [4.2e10, 0, 0],
+    [-5.4e10, 0, 0]
 ])
 
 velocities = np.array([
-    [0, 0,0],
-    [30e3,0,1e3]
+    [0, 19.5e3, 0],
+    [0, -25.2e3, 0]
 ])
 
 masses = np.array([
-    [2e30], # sun
-    [6e24]
+    [2.19e30],  # sun
+    [1.69e30]
 ])
 
 if __name__ == "__main__":
-    time_step = 60*60*24
+    time_step = 60 * 60 * 24
     time = 0
+    time_end = 5 * 60 * 60 * 24 * 365
     plt.figure()
     plt.axes(projection='3d')
 
-    while(time < 4*60*60*24*365):
+    while (time < time_end):
         x = positions[:, 0]
         y = positions[:, 1]
         z = positions[:, 2]
@@ -34,9 +35,11 @@ if __name__ == "__main__":
         velocities = velocities + accelerations * time_step
         positions = positions + velocities * time_step
         time = time + time_step
-        print(time, x, y, z)
-        plt.plot(x,y,z, 'o')
+        print(f'days are now:{time / (60 * 60 * 24)}, x:{x}, y:{y}, z:{z}')
+        print(f' modulo: {time % 365 * 60 * 60 * 24}')
+        if (time % 365 * 60 * 60 * 24 == 0):  # plots every year.
 
+            plt.plot(x, y, z, 'o')
 plt.show()
 
 #find way to separate the integrator for easy hot-swap
