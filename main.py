@@ -19,10 +19,24 @@ masses = np.array([
     [1.69e30]
 ])
 
+def array_maker(pos, end_time, factor):
+    '''Creates a numpy array that stores the positions value of each celestial object.'''
+    n = int(pos.size/3) #number of objects
+    #print(n)
+    t = int(end_time/factor) #number of total timesteps
+    #print(t)
+
+    pos = np.zeros((t,n,3)) # first number is column number, e.g. time, second and third number give dimensonality
+    # we have n objects with 3 dimensions so should be t*n*3 array.
+
+    return pos
+
+
 if __name__ == "__main__":
-    time_step = 60 * 60 * 24
+    time_step = 60 * 60 * 24 # 1 day
     time = 0
-    time_end = 5 * 60 * 60 * 24 * 365
+    time_end = 5 * 60 * 60 * 24 * 365 # 5 years
+    factor = 365*60*60*24 # every year
     plt.figure()
     plt.axes(projection='3d')
 
@@ -37,10 +51,13 @@ if __name__ == "__main__":
         time = time + time_step
         print(f'days are now:{time / (60 * 60 * 24)}, x:{x}, y:{y}, z:{z}')
         print(f' modulo: {time % 365 * 60 * 60 * 24}')
-        if (time % 365 * 60 * 60 * 24 == 0):  # plots every year.
-
+        print(f' positions np.array: {positions}')
+        if (time % factor == 0):  # plots every year.
             plt.plot(x, y, z, 'o')
-plt.show()
+#plt.show()
+
+print(array_maker(positions, time_step, time_end,factor))
+
 
 #find way to separate the integrator for easy hot-swap
 #find better way to display 3d graph.
