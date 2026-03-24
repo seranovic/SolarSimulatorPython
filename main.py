@@ -3,7 +3,9 @@ from numba.np.arrayobj import dtype_type
 import interactions
 import integrators
 import numpy as np
+import visualizer
 from scipy import constants
+import tests
 import matplotlib.pyplot as plt
 
 positions = np.array([
@@ -26,6 +28,7 @@ masses = np.array([
 def run(pos, vel, mass, dt, steps, innersteps, force_func):
     n, d = pos.shape
     pos_t = np.zeros((steps,n,d))
+    print(f'before Sum E = {tests.kinetic_energy_calc(vel, mass)+tests.potential_energy_calc(pos,mass)}')
 
     for step in range(steps):
         for innerstep in range(innersteps):
@@ -33,7 +36,8 @@ def run(pos, vel, mass, dt, steps, innersteps, force_func):
             pos, vel = integrators.LeapFrog(forces, pos, vel, mass, dt)
 
         pos_t[step] = pos
-        print(pos)
+
+    print(f'after Sum E = {tests.kinetic_energy_calc(vel, mass)+tests.potential_energy_calc(pos,mass)}')
 
     return pos_t
 
@@ -41,6 +45,10 @@ def run(pos, vel, mass, dt, steps, innersteps, force_func):
 
 
 if __name__ == "__main__":
+    time_step = 24*60*60 # 1 day
+    data = run(positions, velocities, masses, time_step, 10, 10, interactions.get_forces_numpy)
 
-    run(positions, velocities, masses, time_step, 100, 100, interactions.get_forces_numpy)
+    print(data.shape)
+
+    visualizer.display(data, True)
 
