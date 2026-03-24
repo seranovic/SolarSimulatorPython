@@ -3,5 +3,6 @@ notebook
 numpy
 pandas
 matplotlib
+numba
 seaborn
 scipy

@@ -15,7 +15,7 @@ velocities = np.array([
 ])
 
 masses = np.array([
-    [2.19e30],  # sun
+    [2.19e30],
     [1.69e30]
 ])
 
@@ -30,6 +30,14 @@ def array_maker(pos, end_time, factor):
     # we have n objects with 3 dimensions so should be t*n*3 array.
 
     return pos
+
+def run(pos, vel, masses, steps, innersteps, force.func):
+    n, d = pos.positions.shape
+    pos_t = np.zeroes(steps,n,d)
+
+    for step in range(steps):
+        for innerstep in range(innersteps):
+
 
 
 if __name__ == "__main__":

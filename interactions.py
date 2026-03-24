@@ -6,7 +6,7 @@ Currently this is an O(N^2) approach.
 import numpy as np
 import scipy.constants as constants
 
-def get_forces(pos, mass):
+def get_forces_numpy(pos, mass):
     forces = np.zeros_like(pos)
     for idx in range(len(forces)):
         vectors = pos - pos[idx]
