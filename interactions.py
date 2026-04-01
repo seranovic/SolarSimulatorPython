@@ -5,6 +5,7 @@ Currently this is an O(N^2) approach.
 
 import numpy as np
 import scipy.constants as constants
+from numba import njit
 
 def get_forces_numpy(pos, mass):
     forces = np.zeros_like(pos)

@@ -1,3 +1,4 @@
+from numba import njit
 
 def LeapFrog(forces, pos, vel, mass, dt):
 

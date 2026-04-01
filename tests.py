@@ -6,7 +6,7 @@ def kinetic_energy_calc(vel, mass):
     n = len(mass)
     for i in range(n):
         K += 1 / 2 * mass[i] * np.linalg.norm(vel[i]) ** 2
-    return K
+    return K[0]
 
 def potential_energy_calc(pos, mass):
         U = 0
@@ -16,4 +16,10 @@ def potential_energy_calc(pos, mass):
                 r = np.linalg.norm(pos[i, :] - pos[j, :])
                 U += -constants.gravitational_constant * mass[i] * mass[j] / r
 
-        return U
+        return U[0]
+
+def momentum_calc(vel, mass):
+    P = 0
+    for i in range(len(mass)):
+        P += mass[i]*np.linalg.norm(vel[i])
+        return P[0]

@@ -7,6 +7,8 @@ import visualizer
 from scipy import constants
 import tests
 import matplotlib.pyplot as plt
+from numba import njit
+import pickle
 
 positions = np.array([
     [4.2e10, 0, 0],
@@ -14,8 +16,8 @@ positions = np.array([
 ])
 
 velocities = np.array([
-    [0, 19.5e3, 0],
-    [0, -25.2e3, 0]
+    [+10e3, 19.5e3, -10e3],
+    [-10e3, -25.2e3, +10e3]
 ])
 
 masses = np.array([
@@ -26,9 +28,22 @@ masses = np.array([
 
 
 def run(pos, vel, mass, dt, steps, innersteps, force_func):
+    '''Runs the simulation
+    Args:
+        pos: position (m) given by numpy array
+        vel: velocity (ms⁻¹) given by numpy array
+        mass: mass (kg) given by numpy array
+        dt: time step (s)
+        steps: how often to store position data
+        innersteps: step * innersteps equals the total number of steps the simulation is run for
+        force_func: function to calculate forces, needs to return pos, vel'''
+
     n, d = pos.shape
     pos_t = np.zeros((steps,n,d))
-    print(f'before Sum E = {tests.kinetic_energy_calc(vel, mass)+tests.potential_energy_calc(pos,mass)}')
+    u_t = np.zeros(steps)
+    k_t = np.zeros(steps)
+    p_t = np.zeros(steps)
+
 
     for step in range(steps):
         for innerstep in range(innersteps):
@@ -36,19 +51,24 @@ def run(pos, vel, mass, dt, steps, innersteps, force_func):
             pos, vel = integrators.LeapFrog(forces, pos, vel, mass, dt)
 
         pos_t[step] = pos
+        k_t[step] = tests.kinetic_energy_calc(vel, mass)
+        u_t[step] = tests.potential_energy_calc(pos, mass)
+        p_t[step] = tests.momentum_calc(vel,mass)
 
-    print(f'after Sum E = {tests.kinetic_energy_calc(vel, mass)+tests.potential_energy_calc(pos,mass)}')
+    data = {'Position': pos_t,
+    'Kinetic Energy': k_t,
+    'Potential Energy': u_t}
 
-    return pos_t
 
+    return data
 
 
 
 if __name__ == "__main__":
-    time_step = 24*60*60 # 1 day
-    data = run(positions, velocities, masses, time_step, 10, 10, interactions.get_forces_numpy)
+    time_step = 12*60*60 # 0.5 day
+    data = run(positions, velocities, masses, time_step, 25, 25, interactions.get_forces)
 
-    print(data.shape)
-
-    visualizer.display(data, True)
+    visualizer.display(data['Position'], True)
+    visualizer.display_energy(data['Kinetic Energy'], data['Potential Energy'])
+    #visualizer.display_momentum(data[''])
 
