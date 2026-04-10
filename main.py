@@ -126,19 +126,19 @@ velocities = np.array([
 ])
 
 masses = np.array([
-    [2.19e30],
-    [1.69e30],
-    [1e10],
-    [3.2e20], [8.1e18], [2.5e19], [7.7e20], [4.1e17],
-    [6.0e19], [1.8e20], [9.4e18], [2.9e17], [3.3e19],
-    [1.7e21], [6.4e20], [2.2e18], [8.8e19], [1.1e20],
-    [2.7e19], [4.8e20], [9.9e18], [3.5e20], [7.1e19],
-    [1.9e21], [5.0e20], [3.3e17], [6.8e19], [4.2e20],
-    [1.5e20], [7.7e18], [2.1e21], [8.2e19], [3.9e20],
-    [9.9e18], [6.2e20], [3.8e19], [5.9e20], [2.2e20],
-    [8.7e17], [4.5e20], [1.8e21], [2.7e19], [5.5e20],
-    [3.3e18], [6.5e20], [9.9e19], [2.8e20], [4.4e19],
-    [1.2e21], [3.7e20], [6.6e18], [2.1e20]
+    2.19e30,
+    1.69e30,
+    1e10,
+    3.2e20, 8.1e18, 2.5e19, 7.7e20, 4.1e17,
+    6.0e19, 1.8e20, 9.4e18, 2.9e17, 3.3e19,
+    1.7e21, 6.4e20, 2.2e18, 8.8e19, 1.1e20,
+    2.7e19, 4.8e20, 9.9e18, 3.5e20, 7.1e19,
+    1.9e21, 5.0e20, 3.3e17, 6.8e19, 4.2e20,
+    1.5e20, 7.7e18, 2.1e21, 8.2e19, 3.9e20,
+    9.9e18, 6.2e20, 3.8e19, 5.9e20, 2.2e20,
+    8.7e17, 4.5e20, 1.8e21, 2.7e19, 5.5e20,
+    3.3e18, 6.5e20, 9.9e19, 2.8e20, 4.4e19,
+    1.2e21, 3.7e20, 6.6e18, 2.1e20
 
 ])
 
@@ -182,10 +182,10 @@ def run(pos, vel, mass, dt, steps, innersteps, force_func):
     return data
 
 if __name__ == "__main__":
-    time_step = 12*60*60 # 0.5 day
-    data = run(positions, velocities, masses, time_step, 100, 100, interactions.get_forces)
+    time_step = 3*60*60 # 0.125 day
+    data = run(positions, velocities, masses, time_step, 1000, 1000, interactions.get_forces)
 
-    #visualizer.display(data['Position'], True)
+    visualizer.display(data['Position'], True)
     visualizer.display_energy(data['Kinetic Energy'], data['Potential Energy'])
     #visualizer.display_momentum(data[''])
 
