@@ -75,7 +75,5 @@ if __name__ == "__main__":
 
     visualizer.display(data['Position'], True)
     visualizer.display_energy(data['Kinetic Energy'], data['Potential Energy'])
-    to_save = pandas.DataFrame(data)
-    to_save.to_csv('data.csv')
     #visualizer.display_momentum(data[''])
 
