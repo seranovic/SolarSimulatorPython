@@ -73,7 +73,10 @@ if __name__ == "__main__":
     time_step = 3*60*60 # 0.125 day
     data = run(positions, velocities, masses, time_step, 1000, 1000, interactions.get_forces)
 
-    visualizer.display(data['Position'], True)
-    visualizer.display_energy(data['Kinetic Energy'], data['Potential Energy'])
+    with open("data.pkl", "wb") as f: #this saves the data so it can be 'depickled' later.
+        pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+    #visualizer.display(data['Position'], True)
+    #visualizer.display_energy(data['Kinetic Energy'], data['Potential Energy'])
     #visualizer.display_momentum(data[''])
 
