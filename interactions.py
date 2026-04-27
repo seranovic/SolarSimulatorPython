@@ -39,3 +39,28 @@ def get_forces(pos, mass):
             forces[j,:] -= pair_force
 
     return forces
+
+def get_forces_zeroes(pos, mass):
+    forces = np.zeros_like(pos)
+    return forces
+
+# Elastic Collisions (3D)
+@numba.njit(parallel=True)
+def handle_collisions(pos, vel, mass, radius):
+    for i in numba.prange(len(pos)):
+        for j in range(i + 1, len(pos)):
+            r = pos[i, :] - pos[j, :]
+            dist = np.linalg.norm(r)
+            if dist < radius:
+                n_hat = r / dist
+                v_rel = vel[i, :] - vel[j, :]
+                vn = np.dot(v_rel, n_hat)
+
+                if vn > 0:
+                    continue  # bodies are separating
+                m1, m2 = mass[i], mass[j]
+                print(m1, m2)
+                vel[i, :] -= (2 * m2 / (m1 + m2)) * vn * n_hat
+                vel[j, :] += (2 * m1 / (m1 + m2)) * vn * n_hat
+
+    return vel

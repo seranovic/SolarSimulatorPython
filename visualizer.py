@@ -15,6 +15,7 @@ def display(data, is3d):
 
 def display_energy(kinetic, potential):
     total = kinetic+potential
+    print(f' {np.average(total)} +/- {np.std(total)}')
     plt.figure()
     plt.plot(kinetic, '-', label='Kinetic', color='red')
     plt.plot(potential, '-', label='Potential', color='blue')
