@@ -67,8 +67,10 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
     for step in range(steps):
         for innerstep in range(innersteps):
             forces = force_func(pos, mass)
-            if collision == True:
-                vel = interactions.handle_collisions(pos, vel, mass, radius=radii)
+            if collision == 'Elastic':
+                vel = interactions.handle_collisions_elastic(pos, vel, mass, radius=radii)
+            if collision == 'Inelastic':
+                vel = interactions.handle_collisions_inelastic(pos, vel, mass, radius=radii)
             pos, vel = integrators.LeapFrog(forces, pos, vel, mass, dt)
 
         pos_t[step] = pos
