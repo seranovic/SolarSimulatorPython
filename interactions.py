@@ -44,7 +44,7 @@ def get_forces_zeroes(pos, mass):
     forces = np.zeros_like(pos)
     return forces
 
-# Elastic Collisions (3D)
+# Elastic Collisions (3D), unsure where to go next for inelastic colissions
 @numba.njit(parallel=True)
 def handle_collisions(pos, vel, mass, radius):
     for i in numba.prange(len(pos)):
