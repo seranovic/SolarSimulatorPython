@@ -30,17 +30,17 @@ masses = np.array([
     2*2.19e30,
 ], dtype=np.float64)
 
-def radii_maker(masses, density): #unsure if this works rn lolz
+def radii_maker(mass, density): #unsure if this works rn lolz
     radii = np.zeros_like(masses)
-    for i in range(len(radii):
-        radii[i] = ((3*masses[i])/(4*np.pi*density))**1/3
-    volume = masses/density
+    for i in range(len(radii)):
+        radii[i] = ((3*mass[i])/(4*np.pi*density))**1/3
 
     return radii
 
 
-)
-def run(pos, vel, mass, dt, steps, innersteps, force_func):
+
+def run(pos, vel, mass, radii, collision,
+        dt, steps, innersteps, force_func):
     '''Runs the simulation
     Args:
         pos: position (m) given by numpy array/
@@ -62,8 +62,9 @@ def run(pos, vel, mass, dt, steps, innersteps, force_func):
 
     for step in range(steps):
         for innerstep in range(innersteps):
-            forces = force_func(pos, mass) #maybe add an if check here? does that have a noticeable effect on performance?
-            vel = interactions.handle_collisions(pos, vel, mass, radius=2)
+            forces = force_func(pos, mass)
+            if collision == True:
+                vel = interactions.handle_collisions(pos, vel, mass, radius=radii)
             pos, vel = integrators.LeapFrog(forces, pos, vel, mass, dt)
 
 
