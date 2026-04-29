@@ -1,5 +1,3 @@
-import datetime
-
 from numba.np.arrayobj import dtype_type
 
 import interactions
@@ -58,8 +56,7 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
         steps: how often to store position data
         innersteps: step * innersteps equals the total number of steps the simulation is run for
         force_func: function to calculate forces, needs to return pos, vel"""
-    start = datetime.datetime.now()
-    print(f"Start time of simulation: {start}")
+    start = time.perf_counter()
     n, d = pos.shape
     pos_t = np.zeros((steps, n, d))
     u_t = np.zeros(steps)
@@ -86,9 +83,8 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
         "Potential Energy": u_t,
         "Velocity": vel_t,
     }
-    end = datetime.datetime.now()
-    print(f"End time of simulation: {end}")
-    print(f"Total time of simulation: {end - start}")
+    end = time.perf_counter()
+    print(f"Total time of simulation: {end - start} s")
     return data
 
 
