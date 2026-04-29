@@ -46,7 +46,7 @@ def get_forces_zeroes(pos, mass):
 
 # Elastic Collisions (3D), unsure where to go next for inelastic colissions
 @numba.njit(parallel=True)
-def handle_collisions(pos, vel, mass, radius):
+def handle_collisions_elastic(pos, vel, mass, radius):
     for i in numba.prange(len(pos)):
         for j in range(i + 1, len(pos)):
             r = pos[i, :] - pos[j, :]
@@ -62,5 +62,33 @@ def handle_collisions(pos, vel, mass, radius):
                 print(m1, m2)
                 vel[i, :] -= (2 * m2 / (m1 + m2)) * vn * n_hat
                 vel[j, :] += (2 * m1 / (m1 + m2)) * vn * n_hat
+
+    return vel
+
+def handle_collisions_inelastic(pos, vel, mass, radius):
+    n = len(pos)
+    collided = set()
+
+    for i in range(n):
+        if i in collided:
+            continue
+        for j in range(i + 1, n):
+            if j in collided:
+                continue
+
+            r = pos[i] - pos[j]
+            dist = np.linalg.norm(r)
+
+            if dist < radius:
+                m1, m2 = mass[i], mass[j]
+
+                # Center‑of‑mass velocity (momentum conservation)
+                v_cm = (m1 * vel[i] + m2 * vel[j]) / (m1 + m2)
+
+                vel[i] = v_cm
+                vel[j] = v_cm
+
+                collided.add(i)
+                collided.add(j)
 
     return vel
