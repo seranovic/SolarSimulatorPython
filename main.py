@@ -86,7 +86,7 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
         "Velocity": vel_t,
     }
     end = time.perf_counter()
-    print(f"Total time of simulation: {end - start} s")
+    #print(f"Total time of simulation: {end - start} s")
     return data
 
 

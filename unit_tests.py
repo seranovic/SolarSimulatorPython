@@ -58,6 +58,7 @@ def momentum_collision_inelastic_test():
     momentum2 = tests.momentum_calc(data['Velocity'][-1,:], mass)
 
     if momentum1 == momentum2:
+        print(momentum1, momentum2)
         print(velocity, data['Velocity'][-1,:])
         return True
     else:

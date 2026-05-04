@@ -21,5 +21,6 @@ def potential_energy_calc(pos, mass):
 def momentum_calc(vel, mass):
     P = 0
     for i in range(len(mass)):
-        P += mass[i]*np.linalg.norm(vel[i])
-        return P
+        P += mass[i]*vel[i,:]
+
+    return np.linalg.norm(P)
