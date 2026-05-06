@@ -55,7 +55,8 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
         dt: time step (s)
         steps: how often to store position data
         innersteps: step * innersteps equals the total number of steps the simulation is run for
-        force_func: function to calculate forces, needs to return pos, vel"""
+        force_func: function to calculate forces, needs to return pos, vel
+        :param radii: """
     start = time.perf_counter()
     n, d = pos.shape
     pos_t = np.zeros((steps, n, d))

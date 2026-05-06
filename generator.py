@@ -1,4 +1,6 @@
 import numpy as np
+import pickle
+from scipy import constants
 
 # ============================================================
 # Star system generator
@@ -34,6 +36,10 @@ def generate_star_system(
 
     bodies = []
 
+    posit = []
+    velo = []
+    mass = []
+
     # --------------------------------------------------------
     # Central star
     # --------------------------------------------------------
@@ -42,6 +48,10 @@ def generate_star_system(
         'r': np.array([0.0, 0.0, 0.0]),
         'v': np.array([0.0, 0.0, 0.0])
     }
+
+    posit.append(star['r'])
+    velo.append(star['v'])
+    mass.append(star_mass)
 
     bodies.append(star)
 
@@ -83,9 +93,19 @@ def generate_star_system(
             'v': vel
         }
 
+        posit.append(pos)
+        velo.append(vel)
+        mass.append(planetoid['m'])
+
         bodies.append(planetoid)
 
-    return bodies
+
+        positions = np.asarray(posit)
+        velocities = np.asarray(velo)
+        masses = np.asarray(mass)
+
+
+    return positions, velocities, masses
 
 
 # ============================================================
@@ -95,20 +115,31 @@ def generate_star_system(
 if __name__ == "__main__":
 
     # Generate system
-    bodies = generate_star_system(random_seed=42)
+    pos, vel, m = generate_star_system(random_seed=42)
+    pos = constants.astronomical_unit*pos
+    vel = 4740.57*vel
+    m = 1.98e30*m
+
+    bodies = {'positions': pos,
+            'velocities': vel,
+            'mass' : m}
+    with open('initial_conditions.pkl', 'wb') as f:
+        pickle.dump(bodies, f)
+
 
     # Print header
-    print("m\t\t\t\t r(x, y, z)\t\t\t\t\t v(x, y, z)")
-    print("-" * 80)
-
+#    print("m\t\t\t\t r(x, y, z)\t\t\t\t\t v(x, y, z)")
+#    print("-" * 80)
+#
     # Print all bodies
-    for body in bodies:
-        m = body["m"]
-        x, y, z = body["r"]
-        vx, vy, vz = body["v"]
+#    for body in bodies:
+#        m = body["m"]
+#        x, y, z = body["r"]
+#        vx, vy, vz = body["v"]
+#
+#        print(
+#            f"{m:1.2e}\t"
+#            f"[{x:7.3f}, {y:7.3f}, {z:7.3f}]\t"
+#            f"[{vx:7.3f}, {vy:7.3f}, {vz:7.3f}]"
+#        )
 
-        print(
-            f"{m:1.2e}\t"
-            f"[{x:7.3f}, {y:7.3f}, {z:7.3f}]\t"
-            f"[{vx:7.3f}, {vy:7.3f}, {vz:7.3f}]"
-        )
