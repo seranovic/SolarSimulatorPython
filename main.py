@@ -39,6 +39,9 @@ masses = np.array(
 
 
 def radii_maker(mass, density):  # unsure if this works rn lolz
+    """Makes a radii numpy array
+    :arg mass: mass
+    :arg density: density"""
     radii = np.zeros_like(masses)
     for i in range(len(radii)):
         radii[i] = ((3 * mass[i]) / (4 * np.pi * density)) ** 1 / 3
@@ -48,15 +51,16 @@ def radii_maker(mass, density):  # unsure if this works rn lolz
 
 def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
     """Runs the simulation
-    Args:
-        pos: position (m) given by numpy array/
-        vel: velocity (ms⁻¹) given by numpy array
-        mass: mass (kg) given by numpy array
-        dt: time step (s)
-        steps: how often to store position data
-        innersteps: step * innersteps equals the total number of steps the simulation is run for
-        force_func: function to calculate forces, needs to return pos, vel
-        :param radii: """
+    :arg pos: position
+    :arg vel: velocity
+    :arg mass: mass
+    :arg radii: radii
+    :arg collision: 'elastic', 'inelastic' or empty.
+    :arg dt: time step
+    :arg steps: number of steps
+    :arg innersteps: number of inner steps
+    :arg force_func: function to calculate forces
+    """
     start = time.perf_counter()
     n, d = pos.shape
     pos_t = np.zeros((steps, n, d))
