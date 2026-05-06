@@ -80,13 +80,13 @@ def handle_collisions_inelastic(pos, vel, mass, radius):
             dist = np.linalg.norm(r)
 
             if dist < radius:
-                m1, m2 = mass[i], mass[j]
 
                 # Center‑of‑mass velocity (momentum conservation)
-                v_cm = (m1 * vel[i] + m2 * vel[j]) / (m1 + m2)
+                v_cm = (mass[i] * vel[i] + mass[j] * vel[j]) / (mass[i] + mass[j])
 
                 vel[i] = v_cm
                 vel[j] = v_cm
+            
 
                 collided.add(i)
                 collided.add(j)

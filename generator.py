@@ -115,7 +115,7 @@ def generate_star_system(
 if __name__ == "__main__":
 
     # Generate system
-    pos, vel, m = generate_star_system(random_seed=42)
+    pos, vel, m = generate_star_system(random_seed=67)
     pos = constants.astronomical_unit*pos
     vel = 4740.57*vel
     m = 1.98e30*m
