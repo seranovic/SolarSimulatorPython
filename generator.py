@@ -49,6 +49,12 @@ def generate_star_system(
         'v': np.array([0.0, 0.0, 0.0])
     }
 
+    star2 = {
+        'm' : 0.5*star_mass,
+        'r': np.array([0.0, 0.0, 0.0]),
+        'v': np.array([0.0, 0.0, 0.0])
+    }
+
     posit.append(star['r'])
     velo.append(star['v'])
     mass.append(star_mass)
@@ -100,9 +106,9 @@ def generate_star_system(
         bodies.append(planetoid)
 
 
-        positions = np.asarray(posit)
-        velocities = np.asarray(velo)
-        masses = np.asarray(mass)
+        positions = np.asarray(posit, dtype=np.float64)
+        velocities = np.asarray(velo, dtype=np.float64)
+        masses = np.asarray(mass, dtype=np.float64)
 
 
     return positions, velocities, masses

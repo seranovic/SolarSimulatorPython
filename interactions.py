@@ -1,7 +1,7 @@
-'''
+"""
 This is where the interactions module lives e.g. the F in F = m*a
 Currently this is an O(N^2) approach.
-'''
+"""
 
 import numpy as np
 import scipy.constants as constants
@@ -22,7 +22,8 @@ def get_forces_numpy(pos, mass):
 @numba.njit(parallel=True)
 def get_forces(pos, mass):
     """:arg pos: position
-    :arg mass: mass"""
+    :arg mass: mass
+    :return forces:"""
     forces = np.zeros_like(pos)
 
     for i in numba.prange(len(forces)):
@@ -61,7 +62,7 @@ def handle_collisions_elastic(pos, vel, mass, radius):
         for j in range(i + 1, len(pos)):
             r = pos[i, :] - pos[j, :]
             dist = np.linalg.norm(r)
-            if dist < radius[i]:
+            if dist < radius[j]:
                 n_hat = r / dist
                 v_rel = vel[i, :] - vel[j, :]
                 vn = np.dot(v_rel, n_hat)
@@ -91,7 +92,7 @@ def handle_collisions_inelastic(pos, vel, mass, radius):
             r = pos[i] - pos[j]
             dist = np.linalg.norm(r)
 
-            if dist < radius:
+            if dist < radius[i]:
 
                 # Center‑of‑mass velocity (momentum conservation)
                 v_cm = (mass[i] * vel[i] + mass[j] * vel[j]) / (mass[i] + mass[j])
@@ -100,10 +101,10 @@ def handle_collisions_inelastic(pos, vel, mass, radius):
                 vel[j] = v_cm
 
                 mass[i] = mass[i]+mass[j]
-                mass[j] = 0
+                mass[j] = 0.01
 
 
                 collided.add(i)
                 collided.add(j)
 
-    return vel, mass
+    return vel#, mass

@@ -22,7 +22,7 @@ def momentum_collision_elastic_test():
     radii = np.array([1, 1])
     momentum1 = tests.momentum_calc(velocity, mass)
 
-    data = run(positions, velocity, mass, 1, 'Elastic', 0.1, 10, 10, interactions.get_forces_zeroes)
+    data = run(positions, velocity, mass, np.array([1,1]), 'Elastic', 0.1, 10, 10, interactions.get_forces_zeroes)
 
     momentum2 = tests.momentum_calc(data['Velocity'][-1,:], mass)
 
@@ -53,7 +53,7 @@ def momentum_collision_inelastic_test():
     radii = np.array([1, 1])
     momentum1 = tests.momentum_calc(velocity, mass)
 
-    data = run(positions, velocity, mass, 1, 'Inelastic', 0.1, 10, 10, interactions.get_forces_zeroes)
+    data = run(positions, velocity, mass, np.array([1,1]), 'Inelastic', 0.1, 10, 10, interactions.get_forces_zeroes)
 
     momentum2 = tests.momentum_calc(data['Velocity'][-1,:], mass)
 

@@ -42,7 +42,8 @@ def radii_maker(mass, density):  # unsure if this works rn lolz
     """Makes a radii numpy array
     :arg mass: mass
     :arg density: density"""
-    radii = np.zeros_like(masses)
+    radii = np.zeros_like(mass)
+    #print(len(mass), len(radii))
     for i in range(len(radii)):
         radii[i] = ((3 * mass[i]) / (4 * np.pi * density)) ** 1 / 3
 
@@ -72,10 +73,10 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
     for step in range(steps):
         for innerstep in range(innersteps):
             forces = force_func(pos, mass)
-            if collision == 'Elastic':
-                vel = interactions.handle_collisions_elastic(pos, vel, mass, radius=radii)
-            if collision == 'Inelastic':
-                vel = interactions.handle_collisions_inelastic(pos, vel, mass, radius=radii)
+            #if collision == 'Elastic':
+            #    vel = interactions.handle_collisions_elastic(pos, vel, mass, radius=radii)
+            #if collision == 'Inelastic':
+            #    vel = interactions.handle_collisions_inelastic(pos, vel, mass, radius=radii)
             pos, vel = integrators.LeapFrog(forces, pos, vel, mass, dt)
 
         pos_t[step] = pos
@@ -96,21 +97,15 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
 
 
 if __name__ == "__main__":
-    time_step = 3 * 60 * 60  # 0.125 day
-    data = run(
-        positions,
-        velocities,
-        masses,
-        1,
-        True,
-        time_step,
-        100,
-        100,
-        interactions.get_forces,
-    )
+
+    with open("initial_conditions.pkl", "rb") as f:
+        initial_conditions = pickle.load(f)
+    time_step = 3 * 15 * 60  # 0.125 / 4 day
+    data = run(initial_conditions['positions'], initial_conditions['velocities'], initial_conditions['mass'],1,
+               '',time_step,5000,5000,interactions.get_forces)
 
     with open(
-        "data.pkl", "wb"
+        "data67.pkl", "wb"
     ) as f:  # this saves the data so it can be 'depickled' later.
         pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
 
