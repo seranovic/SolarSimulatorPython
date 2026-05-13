@@ -49,6 +49,12 @@ def generate_star_system(
         'v': np.array([0.0, 0.0, 0.0])
     }
 
+    star2 = {
+        'm' : 0.5*star_mass,
+        'r': np.array([0.0, 0.0, 0.0]),
+        'v': np.array([0.0, 0.0, 0.0])
+    }
+
     posit.append(star['r'])
     velo.append(star['v'])
     mass.append(star_mass)
@@ -100,9 +106,9 @@ def generate_star_system(
         bodies.append(planetoid)
 
 
-        positions = np.asarray(posit)
-        velocities = np.asarray(velo)
-        masses = np.asarray(mass)
+        positions = np.asarray(posit, dtype=np.float64)
+        velocities = np.asarray(velo, dtype=np.float64)
+        masses = np.asarray(mass, dtype=np.float64)
 
 
     return positions, velocities, masses
@@ -115,7 +121,7 @@ def generate_star_system(
 if __name__ == "__main__":
 
     # Generate system
-    pos, vel, m = generate_star_system(random_seed=67)
+    pos, vel, m = generate_star_system(random_seed=67, n_planetoids=50)
     pos = constants.astronomical_unit*pos
     vel = 4740.57*vel
     m = 1.98e30*m
@@ -123,7 +129,7 @@ if __name__ == "__main__":
     bodies = {'positions': pos,
             'velocities': vel,
             'mass' : m}
-    with open('initial_conditions.pkl', 'wb') as f:
+    with open('initial_conditions2.pkl', 'wb') as f:
         pickle.dump(bodies, f)
 
 

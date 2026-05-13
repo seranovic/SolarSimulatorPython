@@ -10,7 +10,7 @@ def LeapFrog(forces, pos, vel, mass, dt):
        :return: pos, vel
        """
        mass = np.reshape(mass, (len(mass),1))
-       accelerations = forces / mass
+       accelerations = forces / mass 
        vel = vel + accelerations * dt
        pos = pos + vel * dt
 
