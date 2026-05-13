@@ -72,7 +72,7 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
 
     for step in range(steps):
         for innerstep in range(innersteps):
-            forces = force_func(pos, mass)
+            forces = force_func(pos, mass, 0.01*constants.astronomical_unit)
             #if collision == 'Elastic':
             #    vel = interactions.handle_collisions_elastic(pos, vel, mass, radius=radii)
             #if collision == 'Inelastic':
@@ -81,9 +81,10 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
 
         pos_t[step] = pos
         k_t[step] = tests.kinetic_energy_calc(vel, mass)
-        u_t[step] = tests.potential_energy_calc(pos, mass)
+        u_t[step] = tests.potential_energy_calc(pos, mass, delta=0.01*constants.astronomical_unit)
         p_t[step] = tests.momentum_calc(vel, mass)
         vel_t[step] = vel
+        print(f'{step/steps*100:.2f}% complete')
 
     data = {
         "Position": pos_t,
@@ -92,13 +93,14 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
         "Velocity": vel_t,
     }
     end = time.perf_counter()
-    #print(f"Total time of simulation: {end - start} s")
+
+    print(f"Total time of simulation: {end - start} s")
     return data
 
 
 if __name__ == "__main__":
 
-    with open("initial_conditions.pkl", "rb") as f:
+    with open("initial_conditions2.pkl", "rb") as f:
         initial_conditions = pickle.load(f)
     time_step = 3 * 15 * 60  # 0.125 / 4 day
     data = run(initial_conditions['positions'], initial_conditions['velocities'], initial_conditions['mass'],1,

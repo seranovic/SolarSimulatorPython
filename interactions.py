@@ -20,7 +20,7 @@ def get_forces_numpy(pos, mass):
         forces[idx] = total_force
     return forces
 @numba.njit(parallel=True)
-def get_forces(pos, mass):
+def get_forces(pos, mass, delta):
     """:arg pos: position
     :arg mass: mass
     :return forces:"""
@@ -34,7 +34,7 @@ def get_forces(pos, mass):
             r_magnitude = np.linalg.norm(r_vector)
             if r_magnitude == 0:
                 continue
-            prefactors = constants.gravitational_constant*mass[i]*mass[j]/r_magnitude**3
+            prefactors = constants.gravitational_constant*mass[i]*mass[j]/(r_magnitude**2+delta**2)**(3/2)
             #print(prefactors.shape, np.dtype(prefactors))
             #print(r_vector.shape, np.dtype(r_vector))
 

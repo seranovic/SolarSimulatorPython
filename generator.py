@@ -121,7 +121,7 @@ def generate_star_system(
 if __name__ == "__main__":
 
     # Generate system
-    pos, vel, m = generate_star_system(random_seed=67)
+    pos, vel, m = generate_star_system(random_seed=67, n_planetoids=50)
     pos = constants.astronomical_unit*pos
     vel = 4740.57*vel
     m = 1.98e30*m
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     bodies = {'positions': pos,
             'velocities': vel,
             'mass' : m}
-    with open('initial_conditions.pkl', 'wb') as f:
+    with open('initial_conditions2.pkl', 'wb') as f:
         pickle.dump(bodies, f)
 
 
