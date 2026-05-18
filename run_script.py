@@ -9,7 +9,7 @@ if __name__ == "__main__":
     identifier = sys.argv[1]
     outerstep = int(sys.argv[2])
     innerstep = int(sys.argv[3])
-    with open("initial_conditions 22.pkl", "rb") as f:
+    with open(f"data/initial_conditions_{identifier}.pkl", "rb") as f:
         init = pickle.load(f)
         print("loaded")
         data = main.run(
@@ -24,11 +24,11 @@ if __name__ == "__main__":
             interactions.get_forces,
         )
 
-    with open(f"test run {identifier}.pkl", "wb") as g:
+    with open(f"data/test_run_{identifier}.pkl", "wb") as g:
         pickle.dump(data, g, protocol=pickle.HIGHEST_PROTOCOL)
 
     visualizer.display_energy(
         data["Kinetic Energy"], data["Potential Energy"], identifier
     )
 
-    visualizer.display(data['Position'], True, 20)
+    visualizer.display(data["Position"], True, 20)

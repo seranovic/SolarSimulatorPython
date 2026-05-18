@@ -93,6 +93,10 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
         "Kinetic Energy": k_t,
         "Potential Energy": u_t,
         "Velocity": vel_t,
+        "Mass": mass,
+        "Timestep": dt,
+        "Outer Steps": steps,
+        "Inner Steps": innersteps,
     }
     end = time.perf_counter()
 

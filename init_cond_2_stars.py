@@ -1,27 +1,28 @@
 import numpy as np
 import sys
 from scipy import constants
-from collections import Counter 
+from collections import Counter
 import pickle
+
 
 def generate_star_system(
     n_planetoids=20,
     n_stars=2,
     # If `star_mass` is None, sample masses uniformly in [star_mass_min, star_mass_max].
-    star_mass=None,               # None | float | list of floats (Msun)
-    star_mass_min=0.1,            # Msun
-    star_mass_max=2.0,            # Msun
+    star_mass=None,  # None | float | list of floats (Msun)
+    star_mass_min=0.1,  # Msun
+    star_mass_max=2.0,  # Msun
     # Binary separation bounds (AU)
-    star_sep_min=100.0,           # AU
-    star_sep_max=1000.0,          # AU
+    star_sep_min=100.0,  # AU
+    star_sep_max=1000.0,  # AU
     # Planetoid radial ranges relative to their host star (AU)
     planetoid_r_min=5.0,
     planetoid_r_max=6.0,
-    disk_thickness=0.05,          # AU
-    dv_fraction=0.05,             # fraction of circular speed used to perturb planetoid velocities
-    planetoid_allocation=None,    # None => mass-weighted default; or list of fractions length n_stars
+    disk_thickness=0.05,  # AU
+    dv_fraction=0.05,  # fraction of circular speed used to perturb planetoid velocities
+    planetoid_allocation=None,  # None => mass-weighted default; or list of fractions length n_stars
     random_seed=None,
-    verbose=True                  # If True print intermediate diagnostics
+    verbose=True,  # If True print intermediate diagnostics
 ):
     """
     Generate a multi-star + planetoid disk initial condition and optionally print diagnostics.
@@ -54,7 +55,9 @@ def generate_star_system(
         if star_mass_min > star_mass_max:
             raise ValueError("star_mass_min must be <= star_mass_max")
         # Uniform sampling in linear mass between bounds
-        star_masses = list(np.random.uniform(star_mass_min, star_mass_max, size=n_stars))
+        star_masses = list(
+            np.random.uniform(star_mass_min, star_mass_max, size=n_stars)
+        )
     elif np.isscalar(star_mass):
         star_masses = [float(star_mass)] * n_stars
     else:
@@ -91,7 +94,7 @@ def generate_star_system(
 
             # Place stars at ±r_i along the chosen direction (barycenter at origin)
             pos1 = np.array([-r1 * ux, -r1 * uy, 0.0])
-            pos2 = np.array([ r2 * ux,  r2 * uy, 0.0])
+            pos2 = np.array([r2 * ux, r2 * uy, 0.0])
 
             # Angular frequency for circular binary: omega = sqrt(G*(m1+m2)/a^3)
             omega = np.sqrt(G * (m1 + m2) / a**3)
@@ -101,7 +104,7 @@ def generate_star_system(
             v2_mag = omega * r2
 
             # Assign tangential velocities perpendicular to separation vector.
-            v1 = np.array([ v1_mag * vx_perp,  v1_mag * vy_perp, 0.0])
+            v1 = np.array([v1_mag * vx_perp, v1_mag * vy_perp, 0.0])
             v2 = np.array([-v2_mag * vx_perp, -v2_mag * vy_perp, 0.0])
 
         star_positions = [pos1, pos2]
@@ -136,7 +139,7 @@ def generate_star_system(
     poss = []
     vels = []
     for m, pos, vel in zip(star_masses, star_positions, star_velocities):
-        bodies.append({'m': m, 'r': pos, 'v': vel})
+        bodies.append({"m": m, "r": pos, "v": vel})
         masses.append(m)
         poss.append(pos)
         vels.append(vel)
@@ -194,7 +197,7 @@ def generate_star_system(
         v_mag_rel = v_circ_rel + dv
 
         vx_rel = -v_mag_rel * np.sin(theta)
-        vy_rel =  v_mag_rel * np.cos(theta)
+        vy_rel = v_mag_rel * np.cos(theta)
         vz_rel = np.random.normal(0.0, 0.01 * v_mag_rel)
 
         vel_rel = np.array([vx_rel, vy_rel, vz_rel])
@@ -203,7 +206,7 @@ def generate_star_system(
 
         planetoid_mass = np.random.uniform(1e-12, 1e-9)
 
-        bodies.append({'m': planetoid_mass, 'r': pos, 'v': vel})
+        bodies.append({"m": planetoid_mass, "r": pos, "v": vel})
         masses.append(planetoid_mass)
         poss.append(pos)
         vels.append(vel)
@@ -214,18 +217,26 @@ def generate_star_system(
     if verbose:
         # Star-level diagnostics
         print("\n=== STAR SYSTEM DIAGNOSTICS ===")
-        for i, (m, pos, vel) in enumerate(zip(star_masses, star_positions, star_velocities)):
+        for i, (m, pos, vel) in enumerate(
+            zip(star_masses, star_positions, star_velocities)
+        ):
             print(f"Star {i}: mass = {m:.6f} Msun")
             print(f"  position (AU) = [{pos[0]:10.6f}, {pos[1]:10.6f}, {pos[2]:10.6f}]")
-            print(f"  velocity (AU/yr) = [{vel[0]:10.6f}, {vel[1]:10.6f}, {vel[2]:10.6f}]")
-        # Barycenter check, everything should be 0,0,0 with of course the posibility of there being round errors that are 
+            print(
+                f"  velocity (AU/yr) = [{vel[0]:10.6f}, {vel[1]:10.6f}, {vel[2]:10.6f}]"
+            )
+        # Barycenter check, everything should be 0,0,0 with of course the posibility of there being round errors that are
         # extremely tiny and non consequencial for the code.
         total_momentum = sum(m * v for m, v in zip(star_masses, star_velocities))
         total_mass = total_stellar_mass
         com_pos = sum(m * p for m, p in zip(star_masses, star_positions)) / total_mass
         com_vel = total_momentum / total_mass
-        print(f"\nBarycenter position (mass-weighted) = [{com_pos[0]:10.6e}, {com_pos[1]:10.6e}, {com_pos[2]:10.6e}] AU")
-        print(f"Barycenter velocity (mass-weighted) = [{com_vel[0]:10.6e}, {com_vel[1]:10.6e}, {com_vel[2]:10.6e}] AU/yr")
+        print(
+            f"\nBarycenter position (mass-weighted) = [{com_pos[0]:10.6e}, {com_pos[1]:10.6e}, {com_pos[2]:10.6e}] AU"
+        )
+        print(
+            f"Barycenter velocity (mass-weighted) = [{com_vel[0]:10.6e}, {com_vel[1]:10.6e}, {com_vel[2]:10.6e}] AU/yr"
+        )
 
         # Binary separation diagnostic (if binary)
         if n_stars == 2:
@@ -237,7 +248,9 @@ def generate_star_system(
         counts = Counter(host_indices)
         print("\nPlanetoid allocation (counts per star):")
         for i in range(n_stars):
-            print(f"  Star {i}: {counts.get(i,0)} planetoids  (probability used = {probs[i]:.3f})")
+            print(
+                f"  Star {i}: {counts.get(i,0)} planetoids  (probability used = {probs[i]:.3f})"
+            )
 
         print("=== END DIAGNOSTICS ===\n")
 
@@ -245,45 +258,43 @@ def generate_star_system(
 
 
 # -------------------------
-# Run generator to produce new values each execution, here is where the values should be changed if we want to 
-# play around with the final numbers that are given. 
+# Run generator to produce new values each execution, here is where the values should be changed if we want to
+# play around with the final numbers that are given.
 # -------------------------
 if __name__ == "__main__":
     # Do not set random_seed here if you want different results each run.
     bodies = generate_star_system(
         n_planetoids=50,
         n_stars=2,
-        star_mass=None,            # sample masses between star_mass_min and star_mass_max
+        star_mass=None,  # sample masses between star_mass_min and star_mass_max
         star_mass_min=0.1,
         star_mass_max=2.0,
         star_sep_min=100.0,
         star_sep_max=1000.0,
         planetoid_r_min=[5.0, 5.0],
         planetoid_r_max=[50.0, 50.0],
-        random_seed=None,          # None => new random draws each run
-        verbose=True
+        random_seed=None,  # None => new random draws each run
+        verbose=True,
     )
 
-    #print(bodies[0])
-    
+    # print(bodies[0])
+
     pos, vel, m = bodies
-    pos = constants.astronomical_unit*np.asarray(pos)
-    vel = 4740.57*np.asarray(vel)
-    m = 1.98e30*np.asarray(m)
+    pos = constants.astronomical_unit * np.asarray(pos)
+    vel = 4740.57 * np.asarray(vel)
+    m = 1.98e30 * np.asarray(m)
 
-    bds = {'positions': pos,
-            'velocities': vel,
-            'mass' : m}
+    bds = {"positions": pos, "velocities": vel, "mass": m}
 
-    print(bds['positions'])
-    
-    with open(f'initial_conditions {sys.argv[1]}.pkl', 'wb') as f:
+    print(bds["positions"])
+
+    with open(f"data/initial_conditions_{sys.argv[1]}.pkl", "wb") as f:
         pickle.dump(bds, f)
 
     # Print a compact table of all bodies (stars first)
     print("m\t\t r(x,y,z)\t\t\t v(x,y,z)")
     print("-" * 80)
-    #for body in bodies:
+    # for body in bodies:
     #    m = body["m"]
     #    x, y, z = body["r"]
     #    vx, vy, vz = body["v"]
