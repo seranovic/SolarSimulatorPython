@@ -9,7 +9,7 @@ if __name__ == "__main__":
     identifier = sys.argv[1]
     outerstep = int(sys.argv[2])
     innerstep = int(sys.argv[3])
-    with open("initial_conditions3.pkl", "rb") as f:
+    with open("initial_conditions 22.pkl", "rb") as f:
         init = pickle.load(f)
         print("loaded")
         data = main.run(
@@ -30,3 +30,5 @@ if __name__ == "__main__":
     visualizer.display_energy(
         data["Kinetic Energy"], data["Potential Energy"], identifier
     )
+
+    visualizer.display(data['Position'], True, 20)

@@ -1,6 +1,8 @@
 import numpy as np
 import sys
-from collections import Counter
+from scipy import constants
+from collections import Counter 
+import pickle
 
 def generate_star_system(
     n_planetoids=20,
@@ -130,8 +132,14 @@ def generate_star_system(
     # Build bodies list with stars first
     # -------------------------
     bodies = []
+    masses = []
+    poss = []
+    vels = []
     for m, pos, vel in zip(star_masses, star_positions, star_velocities):
         bodies.append({'m': m, 'r': pos, 'v': vel})
+        masses.append(m)
+        poss.append(pos)
+        vels.append(vel)
 
     # -------------------------
     # Planetoid allocation probabilities (mass-weighted default)
@@ -196,6 +204,9 @@ def generate_star_system(
         planetoid_mass = np.random.uniform(1e-12, 1e-9)
 
         bodies.append({'m': planetoid_mass, 'r': pos, 'v': vel})
+        masses.append(planetoid_mass)
+        poss.append(pos)
+        vels.append(vel)
 
     # -------------------------
     # Diagnostics and verbose printing
@@ -230,7 +241,7 @@ def generate_star_system(
 
         print("=== END DIAGNOSTICS ===\n")
 
-    return bodies
+    return poss, vels, masses
 
 
 # -------------------------
@@ -253,24 +264,27 @@ if __name__ == "__main__":
         verbose=True
     )
 
-
-    pos, vel, m = bodies['r'], bodies['v'], bodies['m']
-    pos = constants.astronomical_unit*pos
-    vel = 4740.57*vel
-    m = 1.98e30*m
+    #print(bodies[0])
+    
+    pos, vel, m = bodies
+    pos = constants.astronomical_unit*np.asarray(pos)
+    vel = 4740.57*np.asarray(vel)
+    m = 1.98e30*np.asarray(m)
 
     bds = {'positions': pos,
             'velocities': vel,
             'mass' : m}
+
+    print(bds['positions'])
     
-    with open(f'initial_conditions{sys.argv[1]}.pkl', 'wb') as f:
+    with open(f'initial_conditions {sys.argv[1]}.pkl', 'wb') as f:
         pickle.dump(bds, f)
 
     # Print a compact table of all bodies (stars first)
     print("m\t\t r(x,y,z)\t\t\t v(x,y,z)")
     print("-" * 80)
-    for body in bodies:
-        m = body["m"]
-        x, y, z = body["r"]
-        vx, vy, vz = body["v"]
-        print(f"{m:1.2e}\t[{x:9.3f}, {y:9.3f}, {z:7.3f}]\t[{vx:9.3f}, {vy:9.3f}, {vz:7.3f}]")
+    #for body in bodies:
+    #    m = body["m"]
+    #    x, y, z = body["r"]
+    #    vx, vy, vz = body["v"]
+    #    print(f"{m:1.2e}\t[{x:9.3f}, {y:9.3f}, {z:7.3f}]\t[{vx:9.3f}, {vy:9.3f}, {vz:7.3f}]")
