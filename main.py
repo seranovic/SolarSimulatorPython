@@ -43,7 +43,7 @@ def radii_maker(mass, density):  # unsure if this works rn lolz
     :arg mass: mass
     :arg density: density"""
     radii = np.zeros_like(mass)
-    #print(len(mass), len(radii))
+    # print(len(mass), len(radii))
     for i in range(len(radii)):
         radii[i] = ((3 * mass[i]) / (4 * np.pi * density)) ** 1 / 3
 
@@ -72,19 +72,21 @@ def run(pos, vel, mass, radii, collision, dt, steps, innersteps, force_func):
 
     for step in range(steps):
         for innerstep in range(innersteps):
-            forces = force_func(pos, mass, 0.01*constants.astronomical_unit)
-            #if collision == 'Elastic':
+            forces = force_func(pos, mass, 0.1 * constants.astronomical_unit)
+            # if collision == 'Elastic':
             #    vel = interactions.handle_collisions_elastic(pos, vel, mass, radius=radii)
-            #if collision == 'Inelastic':
+            # if collision == 'Inelastic':
             #    vel = interactions.handle_collisions_inelastic(pos, vel, mass, radius=radii)
             pos, vel = integrators.LeapFrog(forces, pos, vel, mass, dt)
 
         pos_t[step] = pos
         k_t[step] = tests.kinetic_energy_calc(vel, mass)
-        u_t[step] = tests.potential_energy_calc(pos, mass, delta=0.01*constants.astronomical_unit)
+        u_t[step] = tests.potential_energy_calc(
+            pos, mass, delta=0.1 * constants.astronomical_unit
+        )
         p_t[step] = tests.momentum_calc(vel, mass)
         vel_t[step] = vel
-        print(f'{step/steps*100:.2f}% complete')
+        print(f"{step/steps*100:.2f}% complete")
 
     data = {
         "Position": pos_t,
@@ -103,8 +105,17 @@ if __name__ == "__main__":
     with open("initial_conditions2.pkl", "rb") as f:
         initial_conditions = pickle.load(f)
     time_step = 3 * 15 * 60  # 0.125 / 4 day
-    data = run(initial_conditions['positions'], initial_conditions['velocities'], initial_conditions['mass'],1,
-               '',time_step,5000,5000,interactions.get_forces)
+    data = run(
+        initial_conditions["positions"],
+        initial_conditions["velocities"],
+        initial_conditions["mass"],
+        1,
+        "",
+        time_step,
+        5000,
+        5000,
+        interactions.get_forces,
+    )
 
     with open(
         "data67.pkl", "wb"
