@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from collections import Counter
 
 def generate_star_system(
@@ -251,6 +252,19 @@ if __name__ == "__main__":
         random_seed=None,          # None => new random draws each run
         verbose=True
     )
+
+
+    pos, vel, m = bodies['r'], bodies['v'], bodies['m']
+    pos = constants.astronomical_unit*pos
+    vel = 4740.57*vel
+    m = 1.98e30*m
+
+    bds = {'positions': pos,
+            'velocities': vel,
+            'mass' : m}
+    
+    with open(f'initial_conditions{sys.argv[1]}.pkl', 'wb') as f:
+        pickle.dump(bds, f)
 
     # Print a compact table of all bodies (stars first)
     print("m\t\t r(x,y,z)\t\t\t v(x,y,z)")
