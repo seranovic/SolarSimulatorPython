@@ -1,10 +1,7 @@
 {...}: {
   languages.python = {
     enable = true;
-    venv = {
-      enable = true;
-      requirements = builtins.readFile ./requirements.txt;
-    };
+    version = "3.12";
+    uv.enable = true;
   };
-  cachix.enable = false;
 }
