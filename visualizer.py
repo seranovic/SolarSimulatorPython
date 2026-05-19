@@ -55,7 +55,7 @@ def display_energy_per(datapath):
 
 
     for i in range(len(masses)):
-        ke_i = 0.5*masses[i]*np.linalg.norm(velocities[i])
+        ke_i = 0.5*masses[i]*np.linalg.norm(velocities[i])**2
         ke.append(ke_i)
 
     print(len(ke), len(pe))
@@ -63,11 +63,17 @@ def display_energy_per(datapath):
     origo = [np.linalg.norm(positions[i]) for i in range(len(masses))]
 
     total_E = [ke[i]+pe[i] for i in range(len(masses))]
-
-
+    escapes = 0
+    for i in range(len(masses)):
+        if total_E[i] > 0:
+            escapes += 1
+    print(escapes)
+    print(np.max(total_E))
     plt.scatter(origo[2:-1], total_E[2:-1], c=total_E[2:-1], cmap='hsv')
     plt.axhline(y=0, color='red')
     plt.xscale('log')
+    plt.yscale('symlog', linthresh=1e40)
+    plt.ylim(-1e56, 1e2)
     plt.ylabel("Total Energy")
     plt.xlabel("Distance from origo")
     plt.savefig('meow.png')
