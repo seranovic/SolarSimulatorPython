@@ -10,7 +10,7 @@
 
 outersteps=$1 # 10000
 innersteps=$2 # 50000
-runs=$3 # 10
+runs=$3 # 1
 offset=$4 # the total amount of datasets from completed and ongoing runs
 
 source env/bin/activate
