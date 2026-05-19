@@ -12,6 +12,10 @@ Replace \<offset\> with your own unique id.
 
 `sbatch batch_run.sh 10000 50000 1 <offset>`
 
+This will give you a job id which you can use to check the job progress:
+
+`jobinfo <job-id>`
+
 ## Retrieve data
 
 Linux/WSL/MacOS only.
