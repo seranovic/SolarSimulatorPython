@@ -2,25 +2,24 @@
 
 ## HPC login
 
+Replace \<username\>.
+
 `ssh <username>@login.genome.au.dk`
 
 ## Queue batch jobs
 
 Replace \<offset\> with your own unique id.
 
-`cd DeiC-RUC-L2-202601/SolarSimulatorPython`
-
+`cd DeiC-RUC-L2-202601/SolarSimulatorPython` \
 `sbatch batch_run.sh 10000 50000 1 <offset>`
 
-This will give you a job id which you can use to check the job progress:
+### Check job progress
 
-`jobinfo <job-id>`
+`squeue -u <username>`
 
 ## Retrieve data
 
 Linux/WSL/MacOS only.
-
-Replace \<username\>.
 
 ### All data
 
