@@ -9,6 +9,7 @@
 Replace \<offset\> with your own unique id.
 
 `cd DeiC-RUC-L2-202601/SolarSimulatorPython`
+
 `sbatch batch_run.sh 10000 50000 10 <offset>`
 
 ## Retrieve data
