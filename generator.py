@@ -1,19 +1,21 @@
 import numpy as np
 import pickle
 from scipy import constants
+import sys
 
 # ============================================================
 # Star system generator
 # ============================================================
 
+
 def generate_star_system(
     n_planetoids=100,
-    star_mass=2.0,          # Solar masses
-    r_min=5.0,              # AU
-    r_max=6.0,              # AU
-    disk_thickness=0.05,    # AU (z scatter)
-    dv_fraction=0.05,       # |Δv| as fraction of v_circ
-    random_seed=None
+    star_mass=2.0,  # Solar masses
+    r_min=5.0,  # AU
+    r_max=6.0,  # AU
+    disk_thickness=0.05,  # AU (z scatter)
+    dv_fraction=0.05,  # |Δv| as fraction of v_circ
+    random_seed=None,
 ):
     """
     Generate a simple star + planetoid disk initial condition.
@@ -44,19 +46,19 @@ def generate_star_system(
     # Central star
     # --------------------------------------------------------
     star = {
-        'm': star_mass,
-        'r': np.array([0.0, 0.0, 0.0]),
-        'v': np.array([0.0, 0.0, 0.0])
+        "m": star_mass,
+        "r": np.array([0.0, 0.0, 0.0]),
+        "v": np.array([0.0, 0.0, 0.0]),
     }
 
     star2 = {
-        'm' : 0.5*star_mass,
-        'r': np.array([0.0, 0.0, 0.0]),
-        'v': np.array([0.0, 0.0, 0.0])
+        "m": 0.5 * star_mass,
+        "r": np.array([0.0, 0.0, 0.0]),
+        "v": np.array([0.0, 0.0, 0.0]),
     }
 
-    posit.append(star['r'])
-    velo.append(star['v'])
+    posit.append(star["r"])
+    velo.append(star["v"])
     mass.append(star_mass)
 
     bodies.append(star)
@@ -88,28 +90,24 @@ def generate_star_system(
 
         # Tangential velocity
         vx = -v_mag * np.sin(theta)
-        vy =  v_mag * np.cos(theta)
-        vz = np.random.normal(0.0, 0.01 * v_mag) #peturbations in the z-axis to simulate how planetesimals move in 3D space
+        vy = v_mag * np.cos(theta)
+        vz = np.random.normal(
+            0.0, 0.01 * v_mag
+        )  # peturbations in the z-axis to simulate how planetesimals move in 3D space
 
         vel = np.array([vx, vy, vz])
 
-        planetoid = {
-            'm': np.random.uniform(1e-12, 1e-9),
-            'r': pos,
-            'v': vel
-        }
+        planetoid = {"m": np.random.uniform(1e-12, 1e-9), "r": pos, "v": vel}
 
         posit.append(pos)
         velo.append(vel)
-        mass.append(planetoid['m'])
+        mass.append(planetoid["m"])
 
         bodies.append(planetoid)
-
 
         positions = np.asarray(posit, dtype=np.float64)
         velocities = np.asarray(velo, dtype=np.float64)
         masses = np.asarray(mass, dtype=np.float64)
-
 
     return positions, velocities, masses
 
@@ -121,23 +119,20 @@ def generate_star_system(
 if __name__ == "__main__":
 
     # Generate system
-    pos, vel, m = generate_star_system(random_seed=67, n_planetoids=50)
-    pos = constants.astronomical_unit*pos
-    vel = 4740.57*vel
-    m = 1.98e30*m
+    pos, vel, m = generate_star_system(n_planetoids=50)
+    pos = constants.astronomical_unit * pos
+    vel = 4740.57 * vel
+    m = 1.98e30 * m
 
-    bodies = {'positions': pos,
-            'velocities': vel,
-            'mass' : m}
-    with open('initial_conditions2.pkl', 'wb') as f:
+    bodies = {"positions": pos, "velocities": vel, "mass": m}
+    with open(f"data/initial_conditions_{sys.argv[1]}.pkl", "wb") as f:
         pickle.dump(bodies, f)
-
 
     # Print header
 #    print("m\t\t\t\t r(x, y, z)\t\t\t\t\t v(x, y, z)")
 #    print("-" * 80)
 #
-    # Print all bodies
+# Print all bodies
 #    for body in bodies:
 #        m = body["m"]
 #        x, y, z = body["r"]
@@ -148,4 +143,3 @@ if __name__ == "__main__":
 #            f"[{x:7.3f}, {y:7.3f}, {z:7.3f}]\t"
 #            f"[{vx:7.3f}, {vy:7.3f}, {vz:7.3f}]"
 #        )
-
