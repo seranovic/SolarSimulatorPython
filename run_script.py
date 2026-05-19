@@ -31,4 +31,4 @@ if __name__ == "__main__":
         data["Kinetic Energy"], data["Potential Energy"], identifier
     )
 
-    visualizer.display(data["Position"], True, 20)
+    visualizer.display(data["Position"], True, identifier)
