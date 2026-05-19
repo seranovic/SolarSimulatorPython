@@ -8,10 +8,10 @@
 # --mem amount of memory
 # -t minimum time in minutes (should be 480 per 1e4x5e4 run)
 
-offset=1
-runs=10
-outersteps=10000
-innersteps=50000
+outersteps=$1 # 10000
+innersteps=$2 # 50000
+runs=$3 # 10
+offset=$4 # the total amount of datasets from completed and ongoing runs
 
 source env/bin/activate
 
