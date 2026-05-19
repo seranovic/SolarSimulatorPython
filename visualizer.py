@@ -49,20 +49,22 @@ def display_energy_per(datapath):
         for j in range(len(masses)):
             if i == j:
                 continue
-            r = np.sqrt((positions[i][0] - positions[j][0])**2 + (positions[i][1] - positions[j][1])**2 + (positions[i][2] - positions[j][2])**2)
-            pe_i += masses[j]/r
-        pe.append(-constants.astronomical_unit*masses[i]*pe_i)
+            r_square = (positions[i][0] - positions[j][0])**2 + (positions[i][1] - positions[j][1])**2 + (positions[i][2] - positions[j][2])**2
+            pe_i += -constants.gravitational_constant*masses[i]*masses[j]/np.sqrt(r_square+0.1*constants.astronomical_unit)
+        pe.append(pe_i)
 
 
-    for i in range(len(masses)):
-        ke_i = 0.5*masses[i]*np.linalg.norm(velocities[i])**2
-        ke.append(ke_i)
+    #for i in range(len(masses)):
+        #ke_i = 0.5*masses[i]* (np.linalg.norm(velocities[i]))**2
+        #ke.append(ke_i)
 
-    print(len(ke), len(pe))
+    speeds_sq = np.sum(velocities**2, axis= 1)
+    ke = masses*speeds_sq
+    #print(len(ke), len(pe))
 
     origo = [np.linalg.norm(positions[i]) for i in range(len(masses))]
 
-    total_E = [ke[i]+pe[i] for i in range(len(masses))]
+    total_E = np.asarray(ke) + np.asarray(pe)
     escapes = 0
     for i in range(len(masses)):
         if total_E[i] > 0:
@@ -72,8 +74,8 @@ def display_energy_per(datapath):
     plt.scatter(origo[2:-1], total_E[2:-1], c=total_E[2:-1], cmap='hsv')
     plt.axhline(y=0, color='red')
     plt.xscale('log')
-    plt.yscale('symlog', linthresh=1e40)
-    plt.ylim(-1e56, 1e2)
+    plt.yscale('symlog', linthresh=1e25)
+    #plt.ylim(, 1e2)
     plt.ylabel("Total Energy")
     plt.xlabel("Distance from origo")
     plt.savefig('meow.png')
