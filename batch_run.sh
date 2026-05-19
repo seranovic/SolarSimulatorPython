@@ -2,7 +2,7 @@
 #SBATCH --account DeiC-RUC-L2-202601
 #SBATCH -c 32
 #SBATCH --mem 8g
-#SBATCH -t 7200
+#SBATCH -t 1440
 
 # -c amount of logical cores (threads)
 # --mem amount of memory
